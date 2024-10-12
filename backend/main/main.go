@@ -1,8 +1,11 @@
 package main
 
 import (
+	"acorneo/messenger/api/routes"
 	"acorneo/messenger/utils"
 	"log"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -11,8 +14,9 @@ func main() {
 		log.Fatal(err)
 	}
 	utils.GiveInstance(db)
-
 	defer db.Close()
 
-	utils.CreateUser("Maksim", "1212", "jopa@jopa.com")
+	e := echo.New()
+	routes.InitializeRoutes(e)
+	e.Logger.Fatal(e.Start(":8080"))
 }
