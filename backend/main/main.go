@@ -10,7 +10,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	utils.GiveInstance(db)
 
 	defer db.Close()
 
+	utils.CreateUser("Maksim", "1212", "jopa@jopa.com")
 }
