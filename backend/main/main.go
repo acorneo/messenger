@@ -1,6 +1,7 @@
 package main
 
 import (
+	"acorneo/messenger/api"
 	"acorneo/messenger/api/routes"
 	"acorneo/messenger/utils"
 	"log"
@@ -14,9 +15,10 @@ func main() {
 		log.Fatal(err)
 	}
 	utils.GiveInstance(db)
+	routes.GiveKey()
 	defer db.Close()
 
 	e := echo.New()
-	routes.InitializeRoutes(e)
+	api.InitializeRoutes(e)
 	e.Logger.Fatal(e.Start(":8080"))
 }
