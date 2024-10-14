@@ -5,9 +5,9 @@
             "server": "localhost",
             "port": 5432,
             "driver": "PostgreSQL",
-            "name": "Messenger Connection",
+            "name": "messenger",
             "database": "messenger",
-            "username": "postgres",
+            "username": "max",
             "password": "1212"
         }
     ]
