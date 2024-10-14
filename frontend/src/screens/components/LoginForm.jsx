@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: ''
     });
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,23 +19,34 @@ const LoginForm = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
+        if (!formData.username) {
+            newErrors.username = 'Username is required';
         }
         if (!formData.password) newErrors.password = 'Password is required';
         return newErrors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const formErrors = validateForm();
-        if (Object.keys(formErrors).length > 0) {
-            setErrors(formErrors);
-        } else {
-            setErrors({});
-            // Handle form submission
+        try {
+            const response = await fetch('http://localhost:8080/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.message === 'Login successful') {
+                navigate('/chat');
+            } else {
+                alert('Invalid credentials');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
         }
     };
 
@@ -46,17 +59,18 @@ const LoginForm = () => {
             <h2 className="text-3xl font-bold mb-6 text-center text-white">Login</h2>
             <div className="mb-4">
                 <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="email">
-                    Email <span className="text-red-500">*</span>
+                    Username <span className="text-red-500">*</span>
                 </label>
                 <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value={formData.email}
+                    type="text"
+                    name="username"
+                    id="username"
+                    value={formData.username}
                     onChange={handleChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-300 bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     style={{ boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)' }}
                 />
+                {errors.username && <p className="text-red-500 text-xs italic">{errors.username}</p>}
                 {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
             </div>
             <div className="mb-6">
